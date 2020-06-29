@@ -82,11 +82,7 @@ namespace AppBinder
 
         private void save_configs()
         {
-            SerializeObject[] objs = new SerializeObject[configs.Count];
-            for (int i = 0; i < objs.Length; i++)
-            {
-                objs[i] = configs[i].serialize();
-            }
+            SerializeObject[] objs = configs.Select(c => c.serialize()).ToArray();
 
             byte[] bytes = MessagePackSerializer.Serialize(objs);
             try
