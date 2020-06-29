@@ -32,11 +32,11 @@ namespace AppBinder
         public MainWindow()
         {
             InitializeComponent();
-            serialize_objects[] objs;
+            SerializeObject[] objs;
             try
             {
                 var bytes = File.ReadAllBytes("./config");
-                objs = MessagePackSerializer.Deserialize<serialize_objects[]>(bytes);
+                objs = MessagePackSerializer.Deserialize<SerializeObject[]>(bytes);
                 foreach (var o in objs)
                 {
                     var pc = new ProcessRunner();
@@ -82,11 +82,12 @@ namespace AppBinder
 
         private void save_configs()
         {
-            serialize_objects[] objs = new serialize_objects[configs.Count];
+            SerializeObject[] objs = new SerializeObject[configs.Count];
             for (int i = 0; i < objs.Length; i++)
             {
                 objs[i] = configs[i].serialize();
             }
+
             byte[] bytes = MessagePackSerializer.Serialize(objs);
             try
             {
@@ -201,15 +202,15 @@ namespace AppBinder
         }
     }
     [MessagePackObject(keyAsPropertyName: true)]
-    public struct serialize_objects
+    public class SerializeObject
     {
-        public bool is_enable;
-        public string config_name;
-        public string status;
-        public string trigger_process;
-        public string bind_process;
-        public string args;
-        public RESTART_POLICY restarter;
+        public bool IsEnable { get; set; }
+        public string ConfigName { get; set; }
+        public string Status { get; set; }
+        public string TriggerProcess { get; set; }
+        public string BindProcess { get; set; }
+        public string Args { get; set; }
+        public RESTART_POLICY Restarter { get; set; }
     }
     //[MessagePackObject(keyAsPropertyName: true)]
     public class ProcessRunner : INotifyPropertyChanged, IDisposable
@@ -267,9 +268,9 @@ namespace AppBinder
                 status.Value = "Waiting Trigger Process...";
             }
         }
-        public void load_config(serialize_objects obj)
+        public void load_config(SerializeObject obj)
         {
-            setup(obj.config_name, obj.trigger_process, obj.bind_process, obj.args, obj.restarter);
+            setup(obj.ConfigName, obj.TriggerProcess, obj.BindProcess, obj.Args, obj.Restarter);
             is_enable.Value = true;
         }
 
@@ -333,16 +334,18 @@ namespace AppBinder
         {
             PC.stop();
         }
-        public serialize_objects serialize()
+        public SerializeObject serialize()
         {
-            serialize_objects sobj;
-            sobj.is_enable = is_enable.Value;
-            sobj.config_name = config_name.Value;
-            sobj.status = status.Value;
-            sobj.trigger_process = trigger_name;
-            sobj.bind_process = binding_process.StartInfo.FileName;
-            sobj.args = binding_process.StartInfo.Arguments;
-            sobj.restarter = restarter;
+            SerializeObject sobj = new SerializeObject
+            {
+                IsEnable = is_enable.Value,
+                ConfigName = config_name.Value,
+                Status = status.Value,
+                TriggerProcess = trigger_name,
+                BindProcess = binding_process.StartInfo.FileName,
+                Args = binding_process.StartInfo.Arguments,
+                Restarter = restarter
+            };
             return sobj;
         }
 

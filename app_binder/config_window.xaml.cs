@@ -27,15 +27,15 @@ namespace AppBinder
             textBox_name.Text = $"Config{((MainWindow)Application.Current.MainWindow).configs.Count + 1}";
         }
 
-        public void load_config(serialize_objects obj, int index)
+        public void load_config(SerializeObject obj, int index)
         {
             button_done.Visibility = Visibility.Hidden;
             button_modify.Visibility = Visibility.Visible;
-            textBox_name.Text = obj.config_name;
-            textBox_trigger.Text = obj.trigger_process;
-            textBox_start.Text = obj.bind_process;
-            textBox_args.Text = obj.args;
-            set_restart_radio_button(obj.restarter);
+            textBox_name.Text = obj.ConfigName;
+            textBox_trigger.Text = obj.TriggerProcess;
+            textBox_start.Text = obj.BindProcess;
+            textBox_args.Text = obj.Args;
+            set_restart_radio_button(obj.Restarter);
             config_index = index;
         }
 
